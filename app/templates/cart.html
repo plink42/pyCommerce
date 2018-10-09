@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>flaskommerce Store</h2>
+<div class="row">
+    <div class="card" style="width:100%;">
+        <div class="card-body">
+            <div class="card-text">
+                <table id="cart" class="table table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th style="width:50%">Product</th>
+                            <th style="width:10%">Price</th>
+                            <th style="width:8%">Quantity</th>
+                            <th style="width:22%" class="text-center">Subtotal</th>
+                            <th style="width:10%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in thecart %}
+                        <tr>
+                            <td data-th="Product">
+                                <div class="row">
+                                    <div class="col-sm-2 hidden-xs">
+                                        <a rel="popover" data-img="https://www.goavmod.com/images/{{c.cust}}/l/{{c.upc}}.jpg" data-trigger="hover click" data-placement="right" >
+                                            <img class="img-responsive cart-image" src="https://www.goavmod.com/images/{{c.cust}}/l/{{c.upc}}.jpg" />
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <h4 class="nomargin">{{c.title}}</h4>
+                                        
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-th="Price">${{c.cost}}</td>
+                            <td data-th="Quantity">
+                                <form action="/update_cart/{{c.upc}}">
+                                <input type="number" name="qty" class="form-control text-center" value="{{c.qty}}">
+                            </td>
+                            <td data-th="Subtotal" class="text-center">
+                                ${{c.total}}
+                            </td>
+                            <td class="actions" data-th="">
+                                
+                                <button type="submit" class="btn btn-info btn-sm"><i class="fa fa-refresh"></i></button>
+                                </form>
+                                <a href="/delete_from_cart/{{c.upc}}" class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="d-table-cell d-sm-none">
+                            <td class="text-center"><strong>Total ${{cart_total}}</strong></td>
+                        </tr>
+                        <tr>
+                            <td><a href="/" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
+                            <td colspan="2" class="d-none d-sm-table-cell"></td>
+                            <td class="d-none d-sm-table-cell text-center"><strong>Total ${{cart_total}}</strong></td>
+                            <td><a href="/checkout" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

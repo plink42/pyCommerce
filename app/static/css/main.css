@@ -1,3 +1,11 @@
+body {
+    background-color: #ddd;
+}
+
+.container-fluid {
+    padding-right: 0px;
+    padding-left: 0px;
+}
 .prod-box {
     width: 32%;
     float: left;
@@ -48,12 +56,68 @@
 }
 
 .popover {
-    
+    background-color: #aaa;
     border-radius: 0px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    padding: 1rem;
+}
+
+.cart-image {
+    height: 6rem;
+}
+
+.cart-input {
+    width: 50%;
 }
 
 @media(min-width: 400px) {
     .popover {
         max-width: none;
     }
+}
+
+.table>tbody>tr>td,
+.table>tfoot>tr>td {
+  vertical-align: middle;
+}
+
+@media screen and (max-width: 600px) {
+  table#cart tbody td .form-control {
+    width: 20%;
+    display: inline !important;
+  }
+  .actions .btn {
+    width: 36%;
+    margin: 1.5em 0;
+  }
+  .actions .btn-info {
+    float: left;
+  }
+  .actions .btn-danger {
+    float: right;
+  }
+  table#cart thead {
+    display: none;
+  }
+  table#cart tbody td {
+    display: block;
+    padding: .6rem;
+    min-width: 320px;
+  }
+  table#cart tbody tr td:first-child {
+    background: #333;
+    color: #fff;
+  }
+  table#cart tbody td:before {
+    content: attr(data-th);
+    font-weight: bold;
+    display: inline-block;
+    width: 8rem;
+  }
+  table#cart tfoot td {
+    display: block;
+  }
+  table#cart tfoot td .btn {
+    display: block;
+  }
 }
