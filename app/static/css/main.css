@@ -1,0 +1,59 @@
+.prod-box {
+    width: 32%;
+    float: left;
+    margin-left: .5rem;
+    padding: .5rem;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0px;
+}
+
+.card-img-top {
+    border-radius: 0px;
+}
+
+.card-top {
+    min-height: 20rem;
+    max-height: 20rem;
+    overflow: hidden;
+}
+
+.synopsis {
+    max-height: 8rem;
+    min-height: 8rem;
+    overflow: hidden;
+}
+
+.title {
+    min-height: 4rem;
+    max-height: 4rem;
+    overflow: hidden;
+}
+
+.price {
+    margin-top: 1rem;
+}
+
+.popover {
+    
+    border-radius: 0px;
+}
+
+@media(min-width: 400px) {
+    .popover {
+        max-width: none;
+    }
+}
