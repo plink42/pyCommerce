@@ -1,5 +1,6 @@
 body {
     background-color: #ddd;
+    padding-top: 4.5rem;
 }
 
 .container-fluid {
@@ -11,6 +12,10 @@ body {
     float: left;
     margin-left: .5rem;
     padding: .5rem;
+}
+
+.navbar {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 .card {
@@ -56,10 +61,14 @@ body {
 }
 
 .popover {
-    background-color: #aaa;
+    background-color: #69bc9a;
     border-radius: 0px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     padding: 1rem;
+}
+
+.popover-body {
+    background-color: #fff;
 }
 
 .cart-image {
@@ -72,8 +81,23 @@ body {
 
 @media(min-width: 400px) {
     .popover {
-        max-width: none;
+        max-width: 50%;
     }
+}
+
+.popover .arrow {
+    display: none;
+}
+
+.stay {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.main-top {
+    margin-top: 70px;
 }
 
 .table>tbody>tr>td,
@@ -87,7 +111,7 @@ body {
     display: inline !important;
   }
   .actions .btn {
-    width: 36%;
+    width: 25%;
     margin: 1.5em 0;
   }
   .actions .btn-info {
@@ -120,4 +144,33 @@ body {
   table#cart tfoot td .btn {
     display: block;
   }
+}
+
+.nostyle {
+    color: inherit;
+}
+
+.nostyle:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.nostyle:active {
+    color: inherit;
+    text-decoration: none;
+    border: none;
+}
+
+nostyle:visited {
+    color: orange;
+}
+
+@media (min-width: 992px) {
+    .col-md-border:not(:last-child) {
+        border-right: 1px solid rgba(0,0,0,.125);
+    }
+    .col-md-border + .col-md-border {
+        border-left: 1px solid rgba(0,0,0,.125);
+        margin-left: -1px;
+    }
 }

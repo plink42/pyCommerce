@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-<h2>flaskommerce Store</h2>
+<h2>{{store_name}}</h2>
 <div class="row">
     <div class="card" style="width:100%;">
         <div class="card-body">
@@ -16,12 +16,17 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% if cartitems == 0 %}
+                        <tr>
+                            <td colspan="5" class="text-center"><h4>Your Cart is Empty. </h2><br><a class="btn btn-warning" role="button" href="/store">Go Shopping</a></td>
+                        </tr>
+                        {% endif %}
                         {% for c in thecart %}
                         <tr>
                             <td data-th="Product">
                                 <div class="row">
                                     <div class="col-sm-2 hidden-xs">
-                                        <a rel="popover" data-img="https://www.goavmod.com/images/{{c.cust}}/l/{{c.upc}}.jpg" data-trigger="hover click" data-placement="right" >
+                                        <a tabindex="0" rel="popover" data-img="https://www.goavmod.com/images/{{c.cust}}/l/{{c.upc}}.jpg" data-trigger="focus" data-placement="right" >
                                             <img class="img-responsive cart-image" src="https://www.goavmod.com/images/{{c.cust}}/l/{{c.upc}}.jpg" />
                                         </a>
                                     </div>
@@ -53,7 +58,7 @@
                             <td class="text-center"><strong>Total ${{cart_total}}</strong></td>
                         </tr>
                         <tr>
-                            <td><a href="/" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
+                            <td><a href="/store" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
                             <td colspan="2" class="d-none d-sm-table-cell"></td>
                             <td class="d-none d-sm-table-cell text-center"><strong>Total ${{cart_total}}</strong></td>
                             <td><a href="/checkout" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a></td>

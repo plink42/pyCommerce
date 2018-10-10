@@ -1,13 +1,15 @@
-from flask import render_template, session, request, flash, url_for, redirect, g
-from sqlalchemy.dialects.mysql import DECIMAL
-from sqlalchemy.dialects import sqlite
-
 import random
 import string
+import json
+
+from flask import render_template, session, request, url_for, redirect
+from sqlalchemy.dialects.mysql import DECIMAL
+from sqlalchemy.dialects import sqlite
 
 from app import app
 from app import db
 
+STORE_NAME = 'Movie Time Place'
 
 class Products(db.Model):
     __tablename__ = 'products'
@@ -33,20 +35,41 @@ class Cart(db.Model):
     def __repr__(self):
         return '<Cart %r>'%self.sessid
 
+@app.context_processor
 def get_cart_count():
+    """return total items in cart
+    
+    Returns:
+        int -- count of all items in cart
+    """
+
     cartitems = 0
     for i in Cart.query.filter(Cart.sessid == session['cartid']).all():
         cartitems += i.qty
-    return cartitems
+    return dict(cartitems = cartitems)
+
+@app.context_processor
+def store_name():
+    return dict(store_name=STORE_NAME)
 
 @app.route('/')
 def index():
     if 'cartid' not in session:
         randomsess = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
         session['cartid'] = randomsess
-    cartitems = get_cart_count()
     prods = Products.query.order_by('street desc').limit(50).all()
-    return render_template('index.html', prods = prods, cartitems = cartitems)
+    return render_template('index.html', prods = prods)
+
+@app.route('/store')
+def store():
+    if 'cartid' not in session:
+        randomsess = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
+        session['cartid'] = randomsess
+    prods = Products.query.order_by('street desc').limit(50).all()
+    c = []
+    for i in Cart.query.filter(Cart.sessid == session['cartid']).with_entities(Cart.item).all():
+        c.append(i.item)    
+    return render_template('store.html', prods = prods, incart= c)
 
 @app.route('/add_to_cart/<upc>/<cost>')
 def add_to_cart(upc, cost):
@@ -88,7 +111,7 @@ def update_cart(upc):
 def show_cart():
     thecart = Cart.query.filter(Cart.sessid == session['cartid']).all()
     cartdisp = []
-    cartitems = get_cart_count()
+
     cart_total = 0
     for cart in thecart:
         prod = Products.query.filter(Products.upc == cart.item).limit(1).all()
@@ -96,14 +119,38 @@ def show_cart():
         data = {'upc': cart.item, 'cost': cart.cost, 'qty': cart.qty, 'title': prod[0].title, 'cust': prod[0].cust, 'total': total}
         cart_total += total
         cartdisp.append(data)
-    return render_template('cart.html', thecart = cartdisp, cart_total = cart_total, cartitems = cartitems)
+    return render_template('cart.html', thecart = cartdisp, cart_total = cart_total)
 
 @app.route('/checkout')
-def checkout():
+def checkout_1():
+    return render_template('checkout_1.html')
+
+@app.route('/checkout/info')
+def checkout_2():
     thecart = Cart.query.filter(Cart.sessid == session['cartid']).all()
     cart_total = 0
     for cart in thecart:
         total = cart.cost*cart.qty
         cart_total += total
-    cart_items = get_cart_count()
-    return render_template('checkout_1.html', cart_total=cart_total, cart_items=cart_items)
+    return render_template('checkout_2.html', cart_total=cart_total)
+
+@app.route('/checkout/payment')
+def checkout_3():
+    return ''
+
+@app.route('/getstates/<country>')
+def get_states(country):
+    with open('app/static/json/provinces.json', encoding='utf-8') as f:
+        data = json.load(f)
+    output = {}
+    for i in data:
+        if i['country'].upper() == country.upper():
+            try:
+                short = i['short']
+            except:
+                short = False
+            if not short:
+                output[i['name']] = i['name']
+            else:
+                output[short] = i['name']
+    return json.dumps(output, indent=4)

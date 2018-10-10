@@ -1,6 +1,43 @@
 {% extends "layout.html" %}
 {% block body %}
-<h2>flaskommerce Store</h2>
+<h2>{{store_name}}</h2>
+<div class="card">
+    <div class="card-header">
+        Please Sign In
+    </div>
+    <div class="card-body">
+        <div class="card-text">
+           <div class="row">
+               <div class="col-md-6 col-md-border">
+                   <div class="p-5 text-left">
+                        <h4>Returning Customers</h4>
+                        <div class="p-3"></div>
+                        <form>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1" class="small">Email address</label>
+                                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1" class="small">Password</label>
+                                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                            </div>
+                            <button type="submit" class="btn btn-primary float-right">Submit</button>
+                        </form>
+                        <div class="p-3"></div>
+                   </div>
+                   
+               </div>
+               <div class="col-md-6 col-md-border">
+                   <div class="p-5">
+                       <h4>Continue as Guest</h4>
+                       <div class="p-3"></div>
+                       <div style="min-height: 11rem;">Proceed to checkout and create an account upon completion</div>
+                       <a href="/checkout/info" role="button" class="btn btn-primary float-right">Continue</a>
+                   </div>
+               </div>
+           </div>
+        </div>
+    </div>
+</div>
 
-Purchasing {{cart_items}} Items for ${{cart_total}}
 {% endblock %}

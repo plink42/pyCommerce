@@ -7,4 +7,4 @@ app.config.from_pyfile('flaskommerce.cfg')
 db = SQLAlchemy()
 db.init_app(app)
 
-from app import routes
+from app import main
