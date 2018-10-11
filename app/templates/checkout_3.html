@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block body %}
+<h2>{{store_name}}</h2>
+<div class="card">
+    <div class="card-header">
+        Checkout Shipping
+    </div>
+    <div class="card-body">
+        <div class="card-text">
+            <form method="POST" action="/checkout/payment">
+                {% for key, value in person.items() %}
+                <input type="hidden" name="{{key}}" value="{{value}}" />
+                {% endfor %}
+           <div class="row">
+               <div class="col-md-6 text-center">
+
+                    <p>
+                        Shipping <b>{{cartitems}}</b> items to:</p>
+                        <p>
+                        <b>{{person.shipfname}} {{person.shiplname}}<br>
+                        {{person.shipaddress1}} {{person.shipaddress2}}<br>
+                        {{person.shipcity}} {{person.shipstate}} {{person.shipzip}} {{person.shipcountry}}</b>
+                    </p>
+               </div>
+               <div class="col-md-6">
+                   <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <h5>Shipping (choose shipping option)</h5>
+                            
+                            <div class="form-check small mt-2">
+                                <input class="form-check-input" type="radio" name="shipping" id="standard" value="standard" checked>
+                                <label class="form-check-label" for="standard">
+                                    Standard Shipping - Oct 20 by 8:00 PM ($1.99)
+                                </label>
+                            </div>
+                            <div class="form-check small mt-2">
+                                <input class="form-check-input" type="radio" name="shipping" id="3day" value="3day">
+                                <label class="form-check-label" for="3day">
+                                    3-5 Day Shipping - Oct 15 by 8:00 PM ($8.99)
+                                </label>
+                            </div>
+                            <div class="form-check small mt-2">
+                                <input class="form-check-input" type="radio" name="shipping" id="2day" value="2day">
+                                <label class="form-check-label" for="3day">
+                                    2 Day Shipping - Oct 12 by 8:00 PM ($16.99)
+                                </label>
+                            </div>
+                            <div class="form-check small mt-2">
+                                <input class="form-check-input" type="radio" name="shipping" id="1day" value="1day">
+                                <label class="form-check-label" for="1day">
+                                    Next Day Shipping - Tomorrow by 8:00 PM ($38.99)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                   </div>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}

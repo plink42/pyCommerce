@@ -9,7 +9,7 @@ from sqlalchemy.dialects import sqlite
 from app import app
 from app import db
 
-STORE_NAME = 'Movie Time Place'
+
 
 class Products(db.Model):
     __tablename__ = 'products'
@@ -50,7 +50,7 @@ def get_cart_count():
 
 @app.context_processor
 def store_name():
-    return dict(store_name=STORE_NAME)
+    return dict(store_name=app.config['STORE_NAME'])
 
 @app.route('/')
 def index():
@@ -134,9 +134,10 @@ def checkout_2():
         cart_total += total
     return render_template('checkout_2.html', cart_total=cart_total)
 
-@app.route('/checkout/payment')
+@app.route('/checkout/shipping', methods=["GET", "POST"])
 def checkout_3():
-    return ''
+    if request.method == "POST":
+        return render_template('checkout_3.html', person=request.form)
 
 @app.route('/getstates/<country>')
 def get_states(country):
