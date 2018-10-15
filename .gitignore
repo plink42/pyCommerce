@@ -2,3 +2,5 @@
 /app/flaskommerce.db
 .pylintrc
 /.vscode/
+*.pyo
+*.pyc
