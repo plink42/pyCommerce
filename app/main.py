@@ -10,7 +10,6 @@ from app import app
 from app import db
 
 
-
 class Products(db.Model):
     __tablename__ = 'products'
     id = db.Column(db.Integer(), primary_key=True)
@@ -35,6 +34,20 @@ class Cart(db.Model):
     def __repr__(self):
         return '<Cart %r>'%self.sessid
 
+class Shipping(db.Model):
+    __tablename__ = 'shipping'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.String(255))
+    costper = db.Column(DECIMAL(10,2), nullable=False)
+    maxqty = db.Column(db.Integer())
+    additional = db.Column(DECIMAL(10,2))
+    isdefault = db.Column(db.Integer(), default=0)
+    region = db.Column(db.String(50), nullable=False)
+
+    def __repr__(self):
+        return '<Shipping %r>'%self.name
+
 @app.context_processor
 def get_cart_count():
     """return total items in cart
@@ -49,8 +62,16 @@ def get_cart_count():
     return dict(cartitems = cartitems)
 
 @app.context_processor
-def store_name():
-    return dict(store_name=app.config['STORE_NAME'])
+def store_info():
+    return dict(store_name=app.config['STORE_NAME'], 
+        store_title=app.config['STORE_TITLE'],
+        company_name=app.config['COMPANY_NAME'],
+        site_url=app.config['STORE_URL'],
+        twitter_url=app.config['TWITTER'],
+        facebook_url=app.config['FACEBOOK'],
+        instagram_url=app.config['INSTAGRAM'],
+        home_url=app.config['HOME_PAGE'],
+        domestic = app.config['DOMESTIC_COUNTRY'])
 
 @app.route('/')
 def index():
@@ -59,6 +80,14 @@ def index():
         session['cartid'] = randomsess
     prods = Products.query.order_by('street desc').limit(50).all()
     return render_template('index.html', prods = prods)
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 @app.route('/store')
 def store():
@@ -109,6 +138,9 @@ def update_cart(upc):
     
 @app.route('/cart')
 def show_cart():
+    if 'cartid' not in session:
+        randomsess = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
+        session['cartid'] = randomsess
     thecart = Cart.query.filter(Cart.sessid == session['cartid']).all()
     cartdisp = []
 
@@ -116,10 +148,10 @@ def show_cart():
     for cart in thecart:
         prod = Products.query.filter(Products.upc == cart.item).limit(1).all()
         total = cart.cost*cart.qty
-        data = {'upc': cart.item, 'cost': cart.cost, 'qty': cart.qty, 'title': prod[0].title, 'cust': prod[0].cust, 'total': total}
+        data = {'upc': cart.item, 'cost': cart.cost, 'qty': cart.qty, 'title': prod[0].title, 'cust': prod[0].cust, 'total': '{:0.2f}'.format(total)}
         cart_total += total
         cartdisp.append(data)
-    return render_template('cart.html', thecart = cartdisp, cart_total = cart_total)
+    return render_template('cart.html', thecart = cartdisp, cart_total = '{:0.2f}'.format(cart_total))
 
 @app.route('/checkout')
 def checkout_1():
@@ -132,12 +164,33 @@ def checkout_2():
     for cart in thecart:
         total = cart.cost*cart.qty
         cart_total += total
-    return render_template('checkout_2.html', cart_total=cart_total)
+    return render_template('checkout_2.html', cart_total='{:0.2f}'.format(cart_total))
 
 @app.route('/checkout/shipping', methods=["GET", "POST"])
 def checkout_3():
+    if request.method == "GET":
+        return redirect(url_for('show_cart'))
+    if request.form['shipcountry'] == app.config['DOMESTIC_COUNTRY']:
+        filt = 'domestic'
+    else:
+        filt = 'international'
+    shipping = Shipping.query.filter(Shipping.region == filt).all()
+    cartitems = get_cart_count()['cartitems']
+    ship_options = []
+    for s in shipping:
+        if cartitems < s.maxqty:
+            opt = {'id': s.id, 'name': s.name, 'description': s.description, 'total_cost': '{:0.2f}'.format(s.costper), 'isdefault': s.isdefault}
+            ship_options.append(opt)
+        else:
+            cost = float(s.costper + (cartitems - s.maxqty) * s.additional)
+            cost = '{:0.2f}'.format(cost)
+            opt = {'id': s.id, 'name': s.name, 'description': s.description, 'total_cost': cost, 'isdefault': s.isdefault}
+            ship_options.append(opt)
+    print(ship_options)
+
     if request.method == "POST":
-        return render_template('checkout_3.html', person=request.form)
+        return render_template('checkout_3.html', person=request.form, ship_options=ship_options)
+    
 
 @app.route('/getstates/<country>')
 def get_states(country):

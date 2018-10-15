@@ -1,18 +1,30 @@
-<div class="col-md-2"></div>
-<div class="col-md-8">
-     
-     <h4>Create User:</h4>
-     <div class="form-group">
-         <label for="email" class="small">Email address (this will be your userid as well)</label>
-         <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
-     </div>
-     <div class="form-group">
-         <label for="password1" class="small">Create a Password</label>
-         <input type="password" class="form-control" id="password1" name="password1"placeholder="Password">
-     </div>
-     <div class="form-group">
-         <label for="password2" class="small">Re-Type Password</label>
-         <input type="password" class="form-control" id="password2" name="password2"placeholder="Password">
-     </div>
+{% extends "layout.html" %}
+{% block body %}
+<h2>{{store_name}}</h2>
+<div class="card">
+    <div class="card-header">
+        Checkout Shipping
+    </div>
+    <div class="card-body">
+        <div class="card-text"><div class="col-md-2"></div>
+            <div class="col-md-8">
+                
+                <h4>Create User:</h4>
+                <div class="form-group">
+                    <label for="email" class="small">Email address (this will be your userid as well)</label>
+                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="password1" class="small">Create a Password</label>
+                    <input type="password" class="form-control" id="password1" name="password1"placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="password2" class="small">Re-Type Password</label>
+                    <input type="password" class="form-control" id="password2" name="password2"placeholder="Password">
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
 </div>
-<div class="col-md-2"></div>
+{% endblock %}
