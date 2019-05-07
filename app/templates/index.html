@@ -1,29 +1,49 @@
 {% extends "layout.html" %}
 {% block body %}
 <h2>{{store_name}}</h2>
-<div class="row">
-
-    {% for p in prods %}
-    <div class="col-md-4 mb-4">
-        <div class="card">
-            <div class="card-top">
-                <a rel="popover" data-img="https://www.goavmod.com/images/{{p.cust}}/l/{{p.upc}}.jpg" data-trigger="click" data-placement="right" >
-                    <img class="card-img-top" onerror="this.src = '/static/images/missing.png';" src="https://www.goavmod.com/images/{{p.cust}}/l/{{p.upc}}.jpg" />
-                </a>
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Featured Items</h4>
+    </div>
+    <div class="card-body" style="background-color:#3777bb;">
+        <div id="FEATURED" class="card-text carousel-main">
+            {% for f in featured %}
+            <div class="carousel-box p-2" style="display:none; background-color:#9ebad8;">
+                <div class="row">
+                    <div class="col-md-4"><img src="https://www.goavmod.com/images/{{f.cust}}/l/{{f.sku}}.jpg" class="img-fluid" /></div>
+                    <div class="col-md-8">
+                        <h3>{{f.title}}</h3>
+                        <h4>${{f.suggestedRetail}}</h4>
+                        <div><a href="/add_to_cart/{{f.sku}}/{{f.suggestedRetail}}" class="btn btn-danger">Add To Cart</a></div>
+                        <div class="synopsis small">{{f.synopsis}}</div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title title">{{p.title}}</h5>
-                <p class="card-text">
-                    <div class="synopsis small">{{p.street}}<br><b>synopsis:</b><br>{{p.synopsis}}</div>
-                    <p class="mt-2">Price: ${{p.suggestedRetail}}</p>
-                    <form action="/add_to_cart/{{p.upc}}/{{p.suggestedRetail}}">
-                        <button class="btn btn-default">Add to Cart</button>
-                    </form>
-                    
-                </p>
-            </div>
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
 </div>
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Random Items</h4>
+    </div>
+    <div class="card-body" style="background-color:#3777bb;">
+        <div id="RANDOM" class="card-text carousel-main">
+            {% for r in randos %}
+            <div class="carousel-box p-2" style="display:none; background-color:#9ebad8;">
+                <div class="row">
+                    <div class="col-md-4"><img src="https://www.goavmod.com/images/{{r.cust}}/l/{{r.sku}}.jpg" class="img-fluid" /></div>
+                    <div class="col-md-8">
+                        <h3>{{r.title}}</h3>
+                        <h4>${{r.suggestedRetail}}</h4>
+                        <div><a href="/add_to_cart/{{r.sku}}/{{r.suggestedRetail}}" class="btn btn-danger">Add To Cart</a></div>
+                        <div class="synopsis small">{{r.synopsis}}</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script src="/static/js/carousel.js"></script>
 {% endblock %}

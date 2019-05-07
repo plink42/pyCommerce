@@ -4,7 +4,7 @@ import json
 import datetime
 
 from flask import render_template, session, request, url_for, redirect
-
+from sqlalchemy.sql import func
 
 from app import app
 from app import db
@@ -43,8 +43,9 @@ def index():
     if 'cartid' not in session:
         randomsess = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
         session['cartid'] = randomsess
-    prods = models.Products.query.order_by('street desc').limit(50).all()
-    return render_template('index.html', prods = prods)
+    featured = models.Products.query.filter(models.Products.isFeatured == 1).all()
+    randos = models.Products.query.order_by(func.random()).limit(10).all()
+    return render_template('index.html', featured = featured, randos=randos)
 
 @app.route('/privacy')
 def privacy():
@@ -65,39 +66,39 @@ def store():
         c.append(i.item)    
     return render_template('store.html', prods = prods, incart= c)
 
-@app.route('/add_to_cart/<upc>/<cost>')
-def add_to_cart(upc, cost):
+@app.route('/add_to_cart/<sku>/<cost>')
+def add_to_cart(sku, cost):
     if 'cartid' not in session:
         randomsess = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
         session['cartid'] = randomsess
-    if upc:
-        incart = models.Cart.query.filter(models.Cart.item == upc).filter(models.Cart.sessid == session['cartid']).all()
+    if sku:
+        incart = models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).all()
         if incart:
-            models.Cart.query.filter(models.Cart.item == upc).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: models.Cart.qty +1})
+            models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: models.Cart.qty +1})
             db.session.commit()
         else:
-            itemadd = models.Cart(sessid=session['cartid'], item=upc, qty=1, cost=cost, date=datetime.datetime.now())
+            itemadd = models.Cart(sessid=session['cartid'], item=sku, qty=1, cost=cost, date=datetime.datetime.now())
             db.session.add(itemadd)
             db.session.commit()
     return redirect(url_for('show_cart'))
 
-@app.route('/delete_from_cart/<upc>')
-def delete_from_cart(upc):
-    if upc:
-        incart = models.Cart.query.filter(models.Cart.item == upc).filter(models.Cart.sessid == session['cartid']).all()
+@app.route('/delete_from_cart/<sku>')
+def delete_from_cart(sku):
+    if sku:
+        incart = models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).all()
         if incart:
-            models.Cart.query.filter(models.Cart.item == upc).filter(models.Cart.sessid == session['cartid']).delete()
+            models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).delete()
             db.session.commit()
     return redirect(url_for('show_cart'))
 
-@app.route('/update_cart/<upc>')
-def update_cart(upc):
+@app.route('/update_cart/<sku>')
+def update_cart(sku):
     qty = request.args.get('qty')
     if qty:
-        if upc:
-            incart = models.Cart.query.filter(models.Cart.item == upc).filter(models.Cart.sessid == session['cartid']).all()
+        if sku:
+            incart = models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).all()
             if incart:
-                models.Cart.query.filter(models.Cart.item == upc).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: qty})
+                models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: qty})
                 db.session.commit()
     return redirect(url_for('show_cart'))
     
@@ -111,9 +112,9 @@ def show_cart():
 
     cart_total = 0
     for cart in thecart:
-        prod = models.Products.query.filter(models.Products.upc == cart.item).limit(1).all()
+        prod = models.Products.query.filter(models.Products.sku == cart.item).limit(1).all()
         total = cart.cost*cart.qty
-        data = {'upc': cart.item, 'cost': cart.cost, 'qty': cart.qty, 'title': prod[0].title, 'cust': prod[0].cust, 'total': '{:0.2f}'.format(total)}
+        data = {'sku': cart.item, 'cost': cart.cost, 'qty': cart.qty, 'title': prod[0].title, 'cust': prod[0].cust, 'total': '{:0.2f}'.format(total)}
         cart_total += total
         cartdisp.append(data)
     return render_template('cart.html', thecart = cartdisp, cart_total = '{:0.2f}'.format(cart_total))

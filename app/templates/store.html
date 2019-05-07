@@ -7,8 +7,8 @@
     <div class="col-md-4 mb-4">
         <div class="card">
             <div class="card-top">
-                <a tabindex="0" rel="popover" data-img="https://www.goavmod.com/images/{{p.cust}}/l/{{p.upc}}.jpg" data-trigger="focus" data-placement="right" >
-                    <img class="card-img-top" onerror="this.src = '/static/images/missing.png';" src="https://www.goavmod.com/images/{{p.cust}}/l/{{p.upc}}.jpg" />
+                <a tabindex="0" rel="popover" data-img="https://www.goavmod.com/images/{{p.cust}}/l/{{p.sku}}.jpg" data-trigger="focus" data-placement="right" >
+                    <img class="card-img-top" onerror="this.src = '/static/images/missing.png';" src="https://www.goavmod.com/images/{{p.cust}}/l/{{p.sku}}.jpg" />
                 </a>
             </div>
             <div class="card-body">
@@ -20,10 +20,10 @@
                     </a>
                     
                     <p class="mt-2">Price: ${{p.suggestedRetail}}</p>
-                    {% if p.upc in incart %}
+                    {% if p.sku in incart %}
                     <button class="btn btn-success" disabled>IN CART</button>
                     {% else %}
-                    <form action="/add_to_cart/{{p.upc}}/{{p.suggestedRetail}}">
+                    <form action="/add_to_cart/{{p.sku}}/{{p.suggestedRetail}}">
                         <button class="btn btn-danger">Add to Cart</button>
                     </form>
                     {% endif %}

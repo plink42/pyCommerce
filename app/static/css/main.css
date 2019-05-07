@@ -12,9 +12,6 @@ html, body {
 }
 
 
-
-
-
 .prod-box {
     width: 32%;
     float: left;
@@ -24,6 +21,7 @@ html, body {
 
 .navbar {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    max-height: 3rem;
 }
 
 .card {
@@ -224,4 +222,8 @@ a {
 
 a:hover {
     color: rgb(255,255,255);
+}
+
+.carousel-box {
+    transition: height 1s, width 1s, padding 1s, visibility 1s, opacity 0.5s ease-out;
 }

@@ -6,15 +6,16 @@ from sqlalchemy.dialects import sqlite
 class Products(db.Model):
     __tablename__ = 'products'
     id = db.Column(db.Integer(), primary_key=True)
-    upc = db.Column(db.String(14), nullable=False)
+    sku = db.Column(db.String(14), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     synopsis = db.Column(db.Text, nullable=False)
     suggestedRetail = db.Column(DECIMAL(10, 2), nullable=False)
     cust = db.Column(db.String(200), nullable=False)
     street = db.Column(sqlite.DATE(storage_format="%(year)04d-%(month)02d-%(day)02d"))
+    isFeatured = db.Column(db.Integer())
 
     def __repr__(self):
-        return '<Product %r>'%self.upc
+        return '<Product %r>'%self.sku
 
 class Cart(db.Model):
     __tablename__ = 'cart'

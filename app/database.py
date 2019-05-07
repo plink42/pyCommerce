@@ -11,12 +11,13 @@ conn = sqlite3.connect(dbname)
 
 Products = '''CREATE TABLE "products"
     (`id` INTEGER PRIMARY KEY AUTOINCREMENT,
-    `upc` BLOB,
+    `sku` BLOB,
     `title` BLOB,
     `synopsis` TEXT,
     `suggestedRetail` NUMERIC,
     `cust` BLOB,
-    `street` NUMERIC)'''
+    `street` NUMERIC,
+    `isFeatured` INTEGER DEFAULT 0)'''
 
 conn.execute(Products)
 
