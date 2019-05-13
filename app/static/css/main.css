@@ -57,9 +57,7 @@ html, body {
 }
 
 .title {
-    min-height: 4rem;
     max-height: 4rem;
-    overflow: hidden;
 }
 
 .price {
@@ -132,7 +130,7 @@ html, body {
   table#cart tbody td {
     display: block;
     padding: .6rem;
-    min-width: 320px;
+   
   }
   table#cart tbody tr td:first-child {
     background: #333;
@@ -226,4 +224,50 @@ a:hover {
 
 .carousel-box {
     transition: height 1s, width 1s, padding 1s, visibility 1s, opacity 0.5s ease-out;
+}
+
+.category_button {
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
+    width: 100%;
+    background-color: #3777bb;
+    padding: .5rem;
+    text-align: center;
+    
+}
+
+.cat-box {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.cat-text {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(55, 119, 187, .8);
+    border-radius: .25rem;
+    border: 1px solid #082351;
+    width: 75%;
+}
+
+.category_back {
+    background-color: #3777bb;
+    border-bottom-left-radius: .5rem;
+    border-bottom-right-radius: .5rem;
+    padding-bottom: 1rem;
+}
+
+.category_button:hover {
+    text-decoration: none;
+}
+
+.bg-whttr {
+    background-color: rgba(255, 255, 255, .5);
+}
+
+.navbar-toggler {
+    font-size: 1rem;
 }

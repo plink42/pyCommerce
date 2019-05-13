@@ -10,12 +10,18 @@
             {% for f in featured %}
             <div class="carousel-box p-2" style="display:none; background-color:#9ebad8;">
                 <div class="row">
-                    <div class="col-md-4"><img src="https://www.goavmod.com/images/{{f.cust}}/l/{{f.sku}}.jpg" class="img-fluid" /></div>
+                    <div class="col-md-4"><img src="/static/images/products/{{f.image}}" class="img-fluid" /></div>
                     <div class="col-md-8">
-                        <h3>{{f.title}}</h3>
-                        <h4>${{f.suggestedRetail}}</h4>
-                        <div><a href="/add_to_cart/{{f.sku}}/{{f.suggestedRetail}}" class="btn btn-danger">Add To Cart</a></div>
-                        <div class="synopsis small">{{f.synopsis}}</div>
+                        <h3>{{f.name}}</h3>
+                        <h4>${{f.price}}</h4>
+                        <div>
+                        {% if f.sku in incart %}
+                            <button class="btn btn-success" disabled>IN CART</button>
+                        {% else %}
+                            <a href="/add_to_cart/{{f.sku}}/{{f.price}}" class="btn btn-danger">Add To Cart</a>
+                        {% endif %}   
+                        </div>
+                        <div class="synopsis small">{{f.longdescription}}</div>
                     </div>
                 </div>
             </div>
@@ -32,12 +38,18 @@
             {% for r in randos %}
             <div class="carousel-box p-2" style="display:none; background-color:#9ebad8;">
                 <div class="row">
-                    <div class="col-md-4"><img src="https://www.goavmod.com/images/{{r.cust}}/l/{{r.sku}}.jpg" class="img-fluid" /></div>
+                    <div class="col-md-4"><img src="/static/images/products/{{r.image}}" class="img-fluid" /></div>
                     <div class="col-md-8">
-                        <h3>{{r.title}}</h3>
-                        <h4>${{r.suggestedRetail}}</h4>
-                        <div><a href="/add_to_cart/{{r.sku}}/{{r.suggestedRetail}}" class="btn btn-danger">Add To Cart</a></div>
-                        <div class="synopsis small">{{r.synopsis}}</div>
+                        <h3>{{r.name}}</h3>
+                        <h4>${{r.price}}</h4>
+                        <div>
+                        {% if r.sku in incart %}
+                            <button class="btn btn-success" disabled>IN CART</button>
+                        {% else %}
+                            <a href="/add_to_cart/{{r.sku}}/{{r.price}}" class="btn btn-danger">Add To Cart</a>
+                        {% endif %}    
+                        </div>
+                        <div class="synopsis small">{{r.longdescription}}</div>
                     </div>
                 </div>
             </div>

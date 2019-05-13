@@ -1,28 +1,11 @@
 {% extends "layout.html" %}
 {% block body %}
-
-<div class="row">
-    <a class="category_button" data-toggle="collapse" href="#categories" role="button" aria-expanded="false" aria-controls="catgories">&updownarrow; Shop By Category &updownarrow;</a>
-</div>
-<div class="row mb-1">
-    <div class="collapse" id="categories">
-        <div class="row category_back">
-            {% for c in cats %}  
-                <div class="col-md-2 mb-2 mt-1">
-                    <a href="/categories/{{c.id}}"><div class="card card-body cat-box">
-                        <img class="img-fluid" src="/static/images/categories/{{c.image}}"/>
-                        <div class="cat-text">SHOP {{c.name}}</div>
-                    </div>
-                    </a>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
+<div class="row mb-2 bg-whttr">
+    <img src="/static/images/categories/{{cat.image}}" class="rounded float-left img-fluid mr-3" style="width: 2rem; height: 2rem;" /><div class="pt-1"><a href="/store"  style="color: black;">Home</a>&nbsp; -> {{cat.name}}</div>
 </div>
 <div class="row">
-
     {% for p in prods %}
-    <div class="col-md-4 mb-4">
+<div class="col-md-4 mb-4">
         <div class="card">
             <div class="card-top">
                 <a tabindex="0" rel="popover" data-img="/static/images/products/{{p.image}}" data-trigger="focus" data-placement="right" >
@@ -36,8 +19,7 @@
                         <div class="synopsis small"><b>description:</b><br>{{p.longdescription}}</div>
                     </a>
                     
-                    <p class="mt-2">Price: <b>${{p.price}}</b><br>
-                    <small>Retail: <b><s>${{p.retailPrice}}</s></b> ({{ (((p.retailPrice - p.price) / p.retailPrice) * 100) | round(2) }}%)</small></p>
+                    <p class="mt-2">Price: <b>${{p.price}}</b></p>
                     {% if p.sku in incart %}
                     <button class="btn btn-success" disabled>IN CART</button>
                     {% else %}

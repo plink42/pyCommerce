@@ -10,6 +10,7 @@ from app import app
 from app import db
 from app import models
 
+from sqlalchemy import desc
 
 db.init_app(app)
 
@@ -45,7 +46,10 @@ def index():
         session['cartid'] = randomsess
     featured = models.Products.query.filter(models.Products.isFeatured == 1).all()
     randos = models.Products.query.order_by(func.random()).limit(10).all()
-    return render_template('index.html', featured = featured, randos=randos)
+    c = []
+    for i in models.Cart.query.filter(models.Cart.sessid == session['cartid']).with_entities(models.Cart.item).all():
+        c.append(i.item)    
+    return render_template('index.html', featured = featured, randos=randos, incart=c)
 
 @app.route('/privacy')
 def privacy():
@@ -60,11 +64,24 @@ def store():
     if 'cartid' not in session:
         randomsess = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
         session['cartid'] = randomsess
-    prods = models.Products.query.order_by('street desc').limit(50).all()
+    prods = models.Products.query.order_by(desc(models.Products.updateDate)).limit(50).all()
+    cats = models.Categories.query.order_by(models.Categories.name).all()
     c = []
     for i in models.Cart.query.filter(models.Cart.sessid == session['cartid']).with_entities(models.Cart.item).all():
         c.append(i.item)    
-    return render_template('store.html', prods = prods, incart= c)
+    return render_template('store.html', prods = prods, cats = cats, incart= c)
+
+@app.route('/categories/<catid>')
+def categories(catid):
+    if catid:
+        prods = models.Products.query.order_by(models.Products.updateDate).filter(models.Products.categories.like('%{}%'.format(catid))).all()
+        cat = models.Categories.query.filter(models.Categories.id == catid).one()
+        c = []
+        for i in models.Cart.query.filter(models.Cart.sessid == session['cartid']).with_entities(models.Cart.item).all():
+            c.append(i.item)    
+        return render_template('categories.html', prods = prods, cat = cat, incart=c)
+    else:
+        return redirect(url_for('error'))
 
 @app.route('/add_to_cart/<sku>/<cost>')
 def add_to_cart(sku, cost):
@@ -94,11 +111,22 @@ def delete_from_cart(sku):
 @app.route('/update_cart/<sku>')
 def update_cart(sku):
     qty = request.args.get('qty')
-    if qty:
+
+    if int(qty) <= 0:
+        qty = 0
+    if qty and qty != 0:
+        print('qty > 0')
         if sku:
             incart = models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).all()
             if incart:
                 models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: qty})
+                db.session.commit()
+    else:
+        print('qty == 0')
+        if sku:
+            incart = models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).all()
+            if incart:
+                models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).delete()
                 db.session.commit()
     return redirect(url_for('show_cart'))
     
@@ -114,7 +142,7 @@ def show_cart():
     for cart in thecart:
         prod = models.Products.query.filter(models.Products.sku == cart.item).limit(1).all()
         total = cart.cost*cart.qty
-        data = {'sku': cart.item, 'cost': cart.cost, 'qty': cart.qty, 'title': prod[0].title, 'cust': prod[0].cust, 'total': '{:0.2f}'.format(total)}
+        data = {'sku': cart.item, 'cost': cart.cost, 'qty': cart.qty, 'name': prod[0].name, 'image': prod[0].image, 'thumb': prod[0].thumb, 'total': '{:0.2f}'.format(total)}
         cart_total += total
         cartdisp.append(data)
     return render_template('cart.html', thecart = cartdisp, cart_total = '{:0.2f}'.format(cart_total))
@@ -174,3 +202,7 @@ def get_states(country):
             else:
                 output[short] = i['name']
     return json.dumps(output, indent=4)
+
+@app.route('/error/<error>')
+def error(error):
+    return "There was and ERROR: {}".format(error)
