@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+<div id="main" class="container-fluid">
 <h2>{{store_name}}</h2>
 <div class="card mb-4">
     <div class="card-header">
@@ -56,6 +57,7 @@
             {% endfor %}
         </div>
     </div>
+</div>
 </div>
 <script src="/static/js/carousel.js"></script>
 {% endblock %}

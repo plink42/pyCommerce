@@ -28,11 +28,11 @@
             </ul>
         </div>
     </nav>
-<div id="main" class="container">
+
 	{% block body %}{% endblock %}
 
 
-</div>
+
 </div>
 
 <footer id="footer" class="bg-store">
@@ -64,5 +64,8 @@
 
 <script src="/static/js/checkout.js"></script>
 <script src="/static/js/province.js"></script>
+{% block scripts %}
+
+{% endblock %}
 </body>
 </html>

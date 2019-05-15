@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="main" class="container-fluid">
+    {% if top %}
+        <div class="row mb-4">
+            <div class="col-md-2"></div>
+            <div class="col-md-10 text-center">
+                <h4>{{top.name}}</h4>
+                <hr style="width: 4%; border-top: 3px solid rgb(0, 0, 0, .5);">
+                <p>{{top.description}}</p>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-2">
+            <nav class="nav navbar-expand flex-md-column flex-row left-nav">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#leftNavDrop" aria-controls="leftNavDrop" aria-expanded="false" aria-label="Toggle navigation">
+                    FILTERS
+                </button>
+                <div class="collapse navbar-collapse" id="leftNavDrop">
+                    <ul class="list-unstyled" >
+                        <li class="nav-item">
+                            <a href="/store" class="nav-link left-nav-link"><b>STORE</b></a>
+                        </li>
+                    {% for c in cats %}
+                        <li class="nav-item">
+                            <a href="/store/cat/{{c.id}}" class="nav-link left-nav-link">{{c.name}}</a>
+                        </li>
+                    {% endfor %}
+                        <li class="nav-item">&nbsp;</li>
+                        <li class="nav-item">
+                            <b class="left-nav-link">PRICE</b>
+                        </li>
+                        {% for f in filters %}
+                            <li class="nav-item">
+                                <a href="/store/{{f.key}}/{{f.val}}" class="nav-link left-nav-link">{{f.display}}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-10">
+            <div class="row">
+                {% for p in prods %}
+                    <div class="col-md-6 mb-4">
+                        <a href="/add_to_cart/{{p.sku}}/{{p.price}}" style="color:#333;" class="prod-link">
+                            <div class="product-2">
+                                <div class="product-2-top">
+                                    <div class="product-2-img">
+                                        <img onerror="this.src = '/static/images/missing.png';" data-other-src="/static/images/products/{{p.image_other}}" src="/static/images/products/{{p.image}}" />
+                                    </div>
+                                    <div class="product-2-hover">
+                                        Add to Cart
+                                    </div>
+                                </div>
+                                <div class="product-2-body">
+                                    <span class="prod-text">{{p.name}}</span><br>
+                                    <span class="prod-price">${{p.price}}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+ {% endblock %}
+
+{% block scripts %}
+<script src="/static/js/prod_image.js"></script>
+{% endblock %}

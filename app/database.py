@@ -20,6 +20,7 @@ Products = '''CREATE TABLE "products"
     `weight` NUMERIC,
     `thumb` BLOB,
     `image` BLOB,
+    `image_other` BLOB,
     `updateDate` NUMERIC,
     `categories` BLOB,
     `liveDate` NUMERIC, 

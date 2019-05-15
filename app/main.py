@@ -59,17 +59,58 @@ def privacy():
 def about():
     return render_template('about.html')
 
-@app.route('/store')
-def store():
+@app.route('/store', defaults={'key': None, 'val': None})
+@app.route('/store/<key>/<val>')
+def store(key, val):
+    if key:
+        if key == 'cat':
+            top = models.Categories.query.filter(models.Categories.id == val).one() 
+            prods = models.Products.query.order_by(desc(models.Products.updateDate)).filter(models.Products.categories.like('%{}%'.format(val))).all()
+        elif key == 'price':
+            if val == '10to30':
+                top = {'name': '$10 to $30', 'description': 'Products between $10 and $30 USD'}
+                prods = models.Products.query.filter(models.Products.price >= 10).filter(models.Products.price <= 30).all()
+            elif val == '30to50':
+                top = {'name': '$30 to $50', 'description': 'Products between $30 and $50 USD'}
+                prods = models.Products.query.filter(models.Products.price >= 30).filter(models.Products.price <= 50).all()
+            elif val == '50to100':
+                top = {'name': '$50 to $100', 'description': 'Products between $50 and $100 USD'}
+                prods = models.Products.query.filter(models.Products.price >= 50).filter(models.Products.price <= 100).all()
+            elif val == 'over100':
+                top = {'name': 'Over $100', 'description': 'Products over $100 USD'}
+                prods = models.Products.query.filter(models.Products.price >= 100).all()
+            else: 
+                top = {'name': 'store', 'description': 'the best store on the planet. find and buy everything.'}
+                prods = models.Products.query.order_by(desc(models.Products.updateDate)).all()
+        else:
+            top = {'name': 'store', 'description': 'the best store on the planet. find and buy everything.'}
+            prods = models.Products.query.order_by(desc(models.Products.updateDate)).all()
+    else:
+        top = {'name': 'store', 'description': 'the best store on the planet. find and buy everything.'}
+        prods = models.Products.query.order_by(desc(models.Products.updateDate)).all()
     if 'cartid' not in session:
         randomsess = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
         session['cartid'] = randomsess
-    prods = models.Products.query.order_by(desc(models.Products.updateDate)).limit(50).all()
+
+    filters = [
+            {'key': 'price',
+            'val': '10to30',
+            'display': '$10 to $30'},
+            {'key': 'price',
+            'val': '30to50',
+            'display': '$30 to $50'},
+            {'key': 'price',
+            'val': '50to100',
+            'display': '$50 to $100'},
+            {'key': 'price',
+            'val': 'over100',
+            'display': 'Over $100'}
+        ]
     cats = models.Categories.query.order_by(models.Categories.name).all()
     c = []
     for i in models.Cart.query.filter(models.Cart.sessid == session['cartid']).with_entities(models.Cart.item).all():
         c.append(i.item)    
-    return render_template('store.html', prods = prods, cats = cats, incart= c)
+    return render_template('store_2.html', prods = prods, cats = cats, incart= c, top = top, filters=filters)
 
 @app.route('/categories/<catid>')
 def categories(catid):

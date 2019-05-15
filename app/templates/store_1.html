@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block body %}
-
+<div id="main" class="container">
 <div class="row">
-    <a class="category_button" data-toggle="collapse" href="#categories" role="button" aria-expanded="false" aria-controls="catgories">&updownarrow; Shop By Category &updownarrow;</a>
+    <a class="category_button" data-toggle="collapse" href="#categories" role="button" aria-expanded="false" aria-controls="catgories">Shop By Category</a>
 </div>
 <div class="row mb-1">
     <div class="collapse" id="categories">
@@ -50,5 +50,6 @@
         </div>
     </div>
     {% endfor %}
+</div>
 </div>
 {% endblock %}

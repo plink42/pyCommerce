@@ -15,6 +15,7 @@ class Products(db.Model):
     weight = db.Column(db.String(14), nullable=False)
     thumb = db.Column(db.String(255), nullable=False)
     image = db.Column(db.String(255), nullable=False)
+    image_other = db.Column(db.String(255), nullable=False)
     updateDate = db.Column(sqlite.DATE(storage_format="%(year)04d-%(month)02d-%(day)02d"))
     categories = db.Column(db.String(255), nullable=False)
     liveDate = db.Column(sqlite.DATE(storage_format="%(year)04d-%(month)02d-%(day)02d"))
