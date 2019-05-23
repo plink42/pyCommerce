@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2>{{product.name}}</h2>
+            <hr style="width: 60px; border-top: 3px solid rgb(0, 0, 0, .5);">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-3 text-right">
+            <img class="img-fluid" src="/static/images/products/{{product.image}}" />
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-price pt-1"><h3>${{product.price}}</h3></div>
+                <div class="card-body">
+                <form method="POST" action="/add_to_cart">
+                <input type="hidden" name="sku" value="{{product.sku}}"/>
+                <input type="hidden" name="price" value="{{product.price}}"/>
+            {% for v in variants %}
+                <div class="form-group">             
+                    <label for="product-variant-{{v}}">{{v}}</label>
+                    <select class="form-control" name="product-variant-{{v}}" id="product-variant-{{v}}">
+                    {% for var in variantvals %}
+                        {% if var.variant == v %}
+                            <option value="{{var.sku}}">{{var.value}} {% if var.priceincrement > 0 %} +${{var.priceincrement}} {% endif %}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                </div>
+            {% endfor %}
+                
+                <div class="form-group">
+                    <label for="id">Quantity</label>
+                    <input type="number" id="qty" name="qty" class="form-control text-center" min=1 value="1">
+                </div>
+                <button type="submit" class="btn btn-primary float-right">Add to Cart</button>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+    <div class="row mt-4 mb-3">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8">
+            <div class="card" style="min-height: 300px;">
+                <div class="card-body">
+                    <p>{{product.longdescription}}</p>
+                    <div class="accordion" id="accordian">
+                        <div class="card">
+                            <div class="card-header collapsed" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <a class="card-title">
+                                <b>Guarantees</b>
+                                </a>
+                            </h2>
+                            </div>
+
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordian">
+                            <div class="card-body">
+                                <ol>
+                                    <li><b>Easy Returns</b> <br>
+                                    If you are not fully satisfied, you can return your purchase for any reason within 30 days.
+                                    </li>
+                                    <li><b>Safety</b> <br>
+                                    All transaction and customer data is securely encrypted.
+                                    </li>
+                                    <li><b>Contact us</b> <br>
+                                    Contact us with any questions. Email: <a href="mailto:this@site.com" style="color: #333;">this@site.com</a> or Call: 888-888-8888
+                                    </li>
+                                </ol>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header collapsed" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <a class="card-title">
+                                <b>Frequently Asked Questions</b>
+                                </a>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordian">
+                            <div class="card-body">
+                                <ul>
+                                    <li><b>When will my order ship?</b><br>
+                                    We ship everything within 1-2 business days (no weekends) from Mars. 
+                                    </li>
+                                    <li><b>Do you ship internationally?</b><br>
+                                    We sure do. Please note that international orders take significantly longer for delivery and may be subject to import/value-added taxes that are beyond our control. 
+                                    </li>
+                                    <li><b>Are birds real?</b><br>
+                                    Obviously not. 
+                                    </li>
+                                </ul>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header collapsed" id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <a class="card-title">
+                                <b>Size info</b>
+                                </a>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordian">
+                            <div class="card-body">
+                                This could be a Size Chart.
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+        </div>
+    </div>
+</div>
+{% endblock %}

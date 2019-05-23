@@ -33,7 +33,9 @@
                                     </div>
                                     <div class="col-sm-9">
                                         <h4 class="nomargin">{{c.name}}</h4>
-                                        
+                                        {% for v in c.variants %}
+                                            {{v}}<br>
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </td>

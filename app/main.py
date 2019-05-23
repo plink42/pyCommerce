@@ -45,11 +45,19 @@ def index():
         randomsess = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
         session['cartid'] = randomsess
     featured = models.Products.query.filter(models.Products.isFeatured == 1).all()
-    randos = models.Products.query.order_by(func.random()).limit(10).all()
+    feature2 = models.Products.query.filter(models.Products.categories.like('%,5%')).limit(3).all()
     c = []
     for i in models.Cart.query.filter(models.Cart.sessid == session['cartid']).with_entities(models.Cart.item).all():
         c.append(i.item)    
-    return render_template('index.html', featured = featured, randos=randos, incart=c)
+    return render_template('index.html', featured = featured, feature2 = feature2, incart=c)
+
+@app.route('/item/<id>')
+def item(id):
+    product = models.Products.query.filter(models.Products.id == id).one()
+    variantvals = models.ProductVariant.query.filter(models.ProductVariant.productid == id).join(models.VariantValue).join(models.Variants).add_columns(models.VariantValue.value, models.VariantValue.sku, models.VariantValue.priceincrement, models.Variants.variant).all()
+    variants = models.ProductVariant.query.filter(models.ProductVariant.productid == id).join(models.VariantValue).join(models.Variants).with_entities(models.Variants.variant).distinct()
+    variants = [item[0] for item in variants]
+    return render_template('item.html', product=product, variantvals = variantvals, variants=variants)
 
 @app.route('/privacy')
 def privacy():
@@ -124,21 +132,48 @@ def categories(catid):
     else:
         return redirect(url_for('error'))
 
+@app.route('/add_to_cart', defaults={'sku': None, 'cost': None}, methods=['GET', 'POST'])
 @app.route('/add_to_cart/<sku>/<cost>')
 def add_to_cart(sku, cost):
     if 'cartid' not in session:
         randomsess = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
         session['cartid'] = randomsess
-    if sku:
-        incart = models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).all()
-        if incart:
-            models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: models.Cart.qty +1})
-            db.session.commit()
-        else:
-            itemadd = models.Cart(sessid=session['cartid'], item=sku, qty=1, cost=cost, date=datetime.datetime.now())
-            db.session.add(itemadd)
-            db.session.commit()
-    return redirect(url_for('show_cart'))
+    if request.method == 'GET':
+        if sku:
+            incart = models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).all()
+            if incart:
+                models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: models.Cart.qty +1})
+                db.session.commit()
+            else:
+                itemadd = models.Cart(sessid=session['cartid'], item=sku, qty=1, cost=cost, date=datetime.datetime.now())
+                db.session.add(itemadd)
+                db.session.commit()
+        return redirect(url_for('show_cart'))
+    elif request.method == 'POST':
+        variants = []
+        for f in request.form:
+            if f == 'sku':
+                sku = request.form.get(f)
+            if f == 'price':
+                cost = request.form.get(f)
+            if f == 'qty':
+                qty = request.form.get(f)
+            if f.startswith('product-variant'):
+                variants.append(request.form.get(f))
+        if sku:
+            fullsku = sku
+            for v in variants:
+                fullsku += '-{}'.format(v)
+        if fullsku:
+            incart = models.Cart.query.filter(models.Cart.item == fullsku).filter(models.Cart.sessid == session['cartid']).all()
+            if incart:
+                models.Cart.query.filter(models.Cart.item == fullsku).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: models.Cart.qty + int(qty)})
+                db.session.commit()
+            else:
+                itemadd = models.Cart(sessid=session['cartid'], item=fullsku, qty=int(qty), cost=cost, date=datetime.datetime.now())
+                db.session.add(itemadd)
+                db.session.commit()
+        return redirect(url_for('show_cart'))
 
 @app.route('/delete_from_cart/<sku>')
 def delete_from_cart(sku):
@@ -160,7 +195,7 @@ def update_cart(sku):
         if sku:
             incart = models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).all()
             if incart:
-                models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: qty})
+                models.Cart.query.filter(models.Cart.item == sku).filter(models.Cart.sessid == session['cartid']).update({models.Cart.qty: int(qty)})
                 db.session.commit()
     else:
         print('qty == 0')
@@ -181,9 +216,17 @@ def show_cart():
 
     cart_total = 0
     for cart in thecart:
-        prod = models.Products.query.filter(models.Products.sku == cart.item).limit(1).all()
+        item = cart.item.split('-')
+        thesku = item[0]
+        del item[0]
+        variants = []
+        for v in item:
+            vname = models.VariantValue.query.filter(models.VariantValue.sku == v).one()
+            print(vname.value)
+            variants.append(vname.value)
+        prod = models.Products.query.filter(models.Products.sku == thesku).limit(1).all()
         total = cart.cost*cart.qty
-        data = {'sku': cart.item, 'cost': cart.cost, 'qty': cart.qty, 'name': prod[0].name, 'image': prod[0].image, 'thumb': prod[0].thumb, 'total': '{:0.2f}'.format(total)}
+        data = {'sku': cart.item, 'cost': cart.cost, 'qty': cart.qty, 'name': prod[0].name, 'image': prod[0].image, 'thumb': prod[0].thumb, 'total': '{:0.2f}'.format(total), 'variants': variants}
         cart_total += total
         cartdisp.append(data)
     return render_template('cart.html', thecart = cartdisp, cart_total = '{:0.2f}'.format(cart_total))

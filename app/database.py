@@ -29,6 +29,28 @@ Products = '''CREATE TABLE "products"
 
 conn.execute(Products)
 
+Variants = '''CREATE TABLE "variants"
+    (`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `variant` BLOB)'''
+
+conn.execute(Variants)
+
+VariantValues = '''CREATE TABLE "variant_value"
+    (`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `variantid` INTEGER,
+    `value` BLOB,
+    `sku` BLOB,
+    `priceincrement` NUMERIC)'''
+
+conn.execute(VariantValues)
+
+ProductVariants = '''CREATE TABLE "product_variants"
+    (`id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `productid` INTEGER,
+    `variantvalueid` INTEGER)'''
+
+conn.execute(ProductVariants)
+
 ProductOptions = '''CREATE TABLE "productoptions"
     (`id` INTEGER PRIMARY KEY AUTOINCREMENT,
     `optionid` INTEGER,

@@ -1,66 +1,77 @@
 {% extends "layout.html" %}
 {% block body %}
 <div id="main" class="container-fluid">
-<div class="main-img">
-    <img src="/static/images/main-one.jpg" />
+<div class="main-img" style="position: relative;">
+    <div class="store-over">
+        <div class="info-box">
+            <h3>Look at This</h3>
+            <hr align="left" style="width: 20%; border-top: 3px solid rgb(0, 0, 0, .5);">
+            <p>This is some text that talks about stuff and whatever okay. You can buy stuff by clicking here. Use this to highlight what makes this brand great.</p>
+            <a href="/store" role="button" class="btn btn-carousel carousel-button">Shop Now &nbsp; <i class="fa fa-angle-right"></i></a>
+        </div>
+    </div>
+    <img src="/static/images/Sample_1.jpg" />
 </div>
+<div class="row mt-4">
+        <div class="col-md-12 text-center">
+            <h4>FEATURED</h4>
+            <hr style="width: 60px; border-top: 3px solid rgb(0, 0, 0, .5);">
+        </div>
+    </div>
+    <div class="row">
+        {% for f in featured %}
+        <div class="col-md-4 mb-4">
+            <a href="/item/{{f.id}}" style="color:#333;" class="prod-link">
+                <div class="product-2" style="height: 400px;">
+                    <div class="product-2-top">
+                        <div class="product-2-img">
+                            <img onerror="this.src = '/static/images/missing.png';" data-other-src="/static/images/products/{{f.image_other}}" src="/static/images/products/{{f.image}}" />
+                        </div>
+                        <div class="product-2-hover">
+                            SELECT OPTIONS <i class="fa fa-angle-right"></i>
+                        </div>
+                    </div>
+                    <div class="product-2-body">
+                        <span class="prod-text">{{f.name}}</span><br>
+                        <span class="prod-price">${{f.price}}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="row mt-4">
+        <div class="col-md-12 text-center">
+            <h4>OUR CUSTOM TEES</h4>
+            <hr style="width: 60px; border-top: 3px solid rgb(0, 0, 0, .5);">
+        </div>
+    </div>
+    <div class="row">
+        {% for f in feature2 %}
+        <div class="col-md-4 mb-4">
+            <a href="/item/{{f.id}}" style="color:#333;" class="prod-link">
+                <div class="product-2" style="height: 400px;">
+                    <div class="product-2-top">
+                        <div class="product-2-img">
+                            <img onerror="this.src = '/static/images/missing.png';" data-other-src="/static/images/products/{{f.image_other}}" src="/static/images/products/{{f.image}}" />
+                        </div>
+                        <div class="product-2-hover">
+                            SELECT OPTIONS <i class="fa fa-angle-right"></i>
+                        </div>
+                    </div>
+                    <div class="product-2-body">
+                        <span class="prod-text">{{f.name}}</span><br>
+                        <span class="prod-price">${{f.price}}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
 
-<div class="card mb-4">
-    <div class="card-header">
-        <h4>Featured Items</h4>
-    </div>
-    <div class="card-body" style="background-color:#3777bb;">
-        <div id="FEATURED" class="card-text carousel-main">
-            {% for f in featured %}
-            <div class="carousel-box p-2" style="display:none; background-color:#9ebad8;">
-                <div class="row">
-                    <div class="col-md-4"><img src="/static/images/products/{{f.image}}" class="img-fluid" /></div>
-                    <div class="col-md-8">
-                        <h3>{{f.name}}</h3>
-                        <h4>${{f.price}}</h4>
-                        <div>
-                        {% if f.sku in incart %}
-                            <button class="btn btn-success" disabled>IN CART</button>
-                        {% else %}
-                            <a href="/add_to_cart/{{f.sku}}/{{f.price}}" class="btn btn-danger">Add To Cart</a>
-                        {% endif %}   
-                        </div>
-                        <div class="synopsis small">{{f.longdescription}}</div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-<div class="card mb-4">
-    <div class="card-header">
-        <h4>Random Items</h4>
-    </div>
-    <div class="card-body" style="background-color:#3777bb;">
-        <div id="RANDOM" class="card-text carousel-main">
-            {% for r in randos %}
-            <div class="carousel-box p-2" style="display:none; background-color:#9ebad8;">
-                <div class="row">
-                    <div class="col-md-4"><img src="/static/images/products/{{r.image}}" class="img-fluid" /></div>
-                    <div class="col-md-8">
-                        <h3>{{r.name}}</h3>
-                        <h4>${{r.price}}</h4>
-                        <div>
-                        {% if r.sku in incart %}
-                            <button class="btn btn-success" disabled>IN CART</button>
-                        {% else %}
-                            <a href="/add_to_cart/{{r.sku}}/{{r.price}}" class="btn btn-danger">Add To Cart</a>
-                        {% endif %}    
-                        </div>
-                        <div class="synopsis small">{{r.longdescription}}</div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-</div>
-<script src="/static/js/carousel.js"></script>
+{% block scripts %}
+<script src="/static/js/prod_image.js"></script>
 {% endblock %}

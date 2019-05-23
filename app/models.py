@@ -25,6 +25,35 @@ class Products(db.Model):
     def __repr__(self):
         return '<Product %r>'%self.sku
 
+class Variants(db.Model):
+    __tablename__ = 'variants'
+    id = db.Column(db.Integer(), primary_key=True)
+    variant = db.Column(db.String(255))
+
+    def __repr__(self):
+        return '<Variant %r>'%self.variant
+
+class VariantValue(db.Model):
+    __tablename__ = 'variant_value'
+    id = db.Column(db.Integer(), primary_key=True)
+    variantid = db.Column(db.Integer(), db.ForeignKey('variants.id'))
+    value = db.Column(db.String(255))
+    sku = db.Column(db.String(100))
+    priceincrement = db.Column(db.String(14))
+    
+
+    def __repr__(self):
+        return '<Variant Value %r>'%self.value
+
+class ProductVariant(db.Model):
+    __tablename__ = 'product_variants'
+    id = db.Column(db.Integer(), primary_key=True)
+    productid = db.Column(db.Integer(), db.ForeignKey('products.id'))
+    variantvalueid = db.Column(db.Integer(), db.ForeignKey('variant_value.id'))
+    variant_value = db.relationship('VariantValue', foreign_keys='ProductVariant.variantvalueid')
+    products = db.relationship('Products', foreign_keys='ProductVariant.productid')
+
+
 class ProductOptions(db.Model):
     __tablename__ = 'productoptions'
     id = db.Column(db.Integer(), primary_key=True)
